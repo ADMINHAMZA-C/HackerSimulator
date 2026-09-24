@@ -1,0 +1,3944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CYBER//OPS</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #050608;
+    color: #d7ffe5;
+    font-family: Consolas, "Courier New", monospace;
+}
+
+button,
+input,
+textarea {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    height: 64px;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    background: #090c0e;
+    border-bottom: 1px solid #16351f;
+}
+
+.logo {
+    color: #00ff66;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 3px;
+}
+
+.logo span {
+    color: #6aff9b;
+}
+
+.header-status {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    font-size: 12px;
+}
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+    background: #00ff66;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #00ff66;
+}
+
+.online {
+    color: #00ff66;
+}
+
+/* =========================
+   MAIN LAYOUT
+========================= */
+
+.main {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 280px 1fr 340px;
+    gap: 10px;
+    padding: 10px;
+}
+
+.left-column,
+.center-column,
+.right-column {
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.panel {
+    background: rgba(7, 11, 13, 0.95);
+    border: 1px solid #183521;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: inset 0 0 25px rgba(0, 255, 100, 0.025);
+}
+
+.panel-title {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    background: #0b100d;
+    border-bottom: 1px solid #183521;
+    color: #00ff66;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* =========================
+   SYSTEM STATUS
+========================= */
+
+.system-panel {
+    flex: 0 0 auto;
+}
+
+.stat {
+    padding: 12px;
+    border-bottom: 1px solid #112218;
+}
+
+.stat:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    color: #789684;
+    font-size: 10px;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    color: #caffd9;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.green {
+    color: #00ff66 !important;
+}
+
+.meter {
+    margin-top: 7px;
+    height: 5px;
+    background: #111814;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.meter-fill {
+    height: 100%;
+    background: #00ff66;
+    transition: 0.3s;
+}
+
+/* =========================
+   QUICK OPTIONS
+========================= */
+
+.quick-panel {
+    flex: 1;
+    min-height: 0;
+}
+
+.quick-options {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.quick-btn,
+.editor-launcher {
+    background: #0b120e;
+    color: #00ff66;
+    border: 1px solid #1d4a2a;
+    border-radius: 4px;
+    transition: 0.15s;
+}
+
+.quick-btn {
+    min-height: 42px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.quick-btn:hover,
+.editor-launcher:hover {
+    background: #00ff66;
+    color: #020604;
+    box-shadow: 0 0 15px rgba(0, 255, 102, 0.25);
+}
+
+.editor-launcher {
+    margin: 10px;
+    width: calc(100% - 20px);
+    min-height: 48px;
+    border-color: #00ff66;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* =========================
+   CCTV
+========================= */
+
+.cameras {
+    height: 220px;
+    min-height: 220px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.camera-panel {
+    position: relative;
+}
+
+.camera-feed,
+.diagnostics-video {
+    width: 100%;
+    height: calc(100% - 38px);
+    object-fit: cover;
+    display: block;
+    background: #020303;
+}
+
+.camera-overlay {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: 48px;
+    display: flex;
+    justify-content: space-between;
+    color: #00ff66;
+    font-size: 10px;
+    text-shadow: 0 0 5px #000;
+    pointer-events: none;
+}
+
+.rec {
+    color: #ff4141;
+}
+
+.rec:before {
+    content: "● ";
+}
+
+/* =========================
+   TERMINAL
+========================= */
+
+.terminal-panel {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 13px;
+    background:
+        linear-gradient(rgba(0, 255, 100, 0.018) 1px, transparent 1px),
+        #030504;
+    background-size: 100% 3px;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.line {
+    margin: 2px 0;
+    word-break: break-word;
+}
+
+.prompt {
+    color: #00ff66;
+}
+
+.info {
+    color: #9db7a5;
+}
+
+.warning {
+    color: #ffd166;
+}
+
+.error {
+    color: #ff5555;
+}
+
+.success {
+    color: #00ff66;
+}
+
+.cursor {
+    display: inline-block;
+    width: 7px;
+    height: 13px;
+    background: #00ff66;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+/* =========================
+   HACK CONTROL
+========================= */
+
+.hack-panel {
+    flex: 0 0 auto;
+}
+
+.hack-content {
+    padding: 12px;
+}
+
+.hack-button {
+    width: 100%;
+    height: 58px;
+    background: #330b0b;
+    color: #ff4040;
+    border: 1px solid #ff3030;
+    border-radius: 4px;
+    font-size: 17px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.hack-button:hover {
+    background: #ff3030;
+    color: #100000;
+}
+
+.hack-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.progress-wrap {
+    margin-top: 12px;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    color: #779181;
+    font-size: 10px;
+    margin-bottom: 5px;
+}
+
+.progress {
+    height: 8px;
+    background: #121814;
+    border: 1px solid #1c3424;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background: #ff3030;
+    transition: 0.15s;
+}
+
+/* =========================
+   RIGHT COLUMN
+========================= */
+
+.right-column {
+    overflow: hidden;
+}
+
+.diagnostics-panel {
+    height: 240px;
+    min-height: 240px;
+}
+
+.telemetry-panel {
+    flex: 1;
+    min-height: 0;
+}
+
+.telemetry {
+    padding: 10px;
+    height: calc(100% - 38px);
+    overflow: auto;
+}
+
+.telemetry-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 3px;
+    border-bottom: 1px solid #112218;
+    font-size: 11px;
+}
+
+.telemetry-row span:first-child {
+    color: #668171;
+}
+
+.mission-panel {
+    height: 155px;
+    min-height: 155px;
+}
+
+.mission-content {
+    padding: 12px;
+}
+
+.mission-status {
+    color: #00ff66;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.mission-text {
+    color: #718c7b;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+    height: 30px;
+    min-height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    background: #090c0e;
+    border-top: 1px solid #16351f;
+    color: #557060;
+    font-size: 10px;
+}
+
+/* =========================
+   FULL SCREEN OVERLAYS
+========================= */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    background: #050608;
+}
+
+.topbar {
+    height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 0 16px;
+    background: #090c0e;
+    border-bottom: 1px solid #183521;
+}
+
+.back,
+.appbtn {
+    height: 36px;
+    padding: 0 15px;
+    background: #0b120e;
+    color: #00ff66;
+    border: 1px solid #00ff66;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.back:hover,
+.appbtn:hover {
+    background: #00ff66;
+    color: #020604;
+}
+
+.title {
+    color: #00ff66;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.screen {
+    height: calc(100% - 58px);
+    padding: 20px;
+    overflow: auto;
+}
+
+/* =========================
+   APPS
+========================= */
+
+.cardgrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.appcard {
+    padding: 20px;
+    background: #090d0b;
+    border: 1px solid #183521;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.appcard:hover {
+    border-color: #00ff66;
+    background: #0c1510;
+}
+
+.appicon {
+    font-size: 30px;
+}
+
+.appname {
+    margin-top: 10px;
+    color: #00ff66;
+    font-weight: bold;
+}
+
+.appdesc {
+    margin-top: 6px;
+    color: #789684;
+    font-size: 11px;
+}
+
+/* =========================
+   APP COMPONENTS
+========================= */
+
+.field {
+    width: 100%;
+    padding: 11px;
+    background: #030504;
+    color: #d7ffe5;
+    border: 1px solid #214b2c;
+    outline: none;
+}
+
+.field:focus {
+    border-color: #00ff66;
+}
+
+.bigbtn {
+    padding: 11px 16px;
+    background: #0b120e;
+    color: #00ff66;
+    border: 1px solid #00ff66;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.bigbtn:hover {
+    background: #00ff66;
+    color: #020604;
+}
+
+.row {
+    display: flex;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.box {
+    padding: 15px;
+    background: #080d0a;
+    border: 1px solid #183521;
+    border-radius: 5px;
+    margin-bottom: 12px;
+}
+
+.bar {
+    height: 12px;
+    background: #111814;
+    border: 1px solid #214b2c;
+}
+
+.fill {
+    height: 100%;
+    width: 0;
+    background: #00ff66;
+    transition: 0.15s;
+}
+
+.bigstat {
+    font-size: 24px;
+    color: #00ff66;
+    font-weight: bold;
+}
+
+.log {
+    height: 180px;
+    overflow: auto;
+    background: #030504;
+    padding: 10px;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* =========================
+   GAME
+========================= */
+
+#gameCanvas {
+    display: block;
+    width: min(900px, 100%);
+    height: auto;
+    max-height: 70vh;
+    margin: auto;
+    border: 1px solid #00ff66;
+    background: #020403;
+    image-rendering: pixelated;
+}
+
+.gamehud {
+    max-width: 900px;
+    margin: 0 auto 10px;
+    display: flex;
+    justify-content: space-between;
+    color: #00ff66;
+}
+
+.hint {
+    text-align: center;
+    color: #789684;
+    font-size: 11px;
+    margin-top: 8px;
+}
+
+/* =========================
+   TEXT EDITOR
+========================= */
+
+#textEditorScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: none;
+    background: #050608;
+}
+
+.editor-area {
+    position: absolute;
+    top: 58px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#textEditor {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    border: 0;
+    outline: 0;
+    padding: 20px;
+    background: #030504;
+    color: #d7ffe5;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+    .main {
+        grid-template-columns: 230px 1fr;
+    }
+
+    .right-column {
+        display: none;
+    }
+
+    .cardgrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 750px) {
+    .main {
+        grid-template-columns: 1fr;
+    }
+
+    .left-column {
+        display: none;
+    }
+
+    .cameras {
+        grid-template-columns: 1fr;
+        height: 360px;
+    }
+
+    .cardgrid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app" id="hackerSimulator">
+
+<header class="header">
+    <div class="logo">CYBER<span>//</span>OPS</div>
+
+    <div class="header-status">
+        <span class="status-dot"></span>
+        <span class="online">SYSTEM ONLINE</span>
+        <span id="headerClock">00:00:00</span>
+    </div>
+</header>
+
+<main class="main">
+
+<section class="left-column">
+
+    <div class="panel system-panel">
+
+        <div class="panel-title">
+            SYSTEM STATUS
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">CPU LOAD</div>
+            <div class="stat-value green" id="cpuValue">37%</div>
+
+            <div class="meter">
+                <div
+                    class="meter-fill"
+                    id="cpuMeter"
+                    style="width:37%">
+                </div>
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">MEMORY</div>
+
+            <div
+                class="stat-value"
+                id="ramValue">
+                6.7 GB / 16 GB
+            </div>
+
+            <div class="meter">
+                <div
+                    class="meter-fill"
+                    id="ramMeter"
+                    style="width:42%">
+                </div>
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">NETWORK</div>
+            <div class="stat-value green">
+                SECURE
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="panel quick-panel">
+
+        <div class="panel-title">
+            QUICK OPTIONS
+        </div>
+
+        <div class="quick-options">
+
+            <button
+                class="quick-btn"
+                onclick="scanSystem()">
+                SCAN
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="accessCams()">
+                CCTV
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="diagnostics()">
+                DIAG
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="clearTerminal()">
+                CLEAR
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="hackVAR()">
+                ⚽ HACK VAR
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="findIPs()">
+                🌐 FIND IPs
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="openApp('cracker')">
+                🔐 CRACK
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="openApp('miner')">
+                ⛏️ MINER
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="openApps()">
+                🧰 APPS
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="openGame()">
+                🎮 GAME
+            </button>
+
+        </div>
+
+        <button
+            class="editor-launcher"
+            onclick="openTextEditor()">
+            📝 TEXT EDITOR
+        </button>
+
+    </div>
+
+</section>
+
+
+<section class="center-column">
+
+    <div class="cameras">
+
+        <div class="panel camera-panel">
+
+            <div class="panel-title">
+                CCTV CAMERA 01
+            </div>
+
+            <video
+                id="cam1"
+                class="camera-feed"
+                src="cam1.mp4"
+                autoplay
+                muted
+                loop
+                playsinline>
+            </video>
+
+            <div class="camera-overlay">
+                <span>CAM-01</span>
+                <span class="rec">REC</span>
+                <span id="cam1Clock">00:00:00</span>
+            </div>
+
+        </div>
+
+
+        <div class="panel camera-panel">
+
+            <div class="panel-title">
+                CCTV CAMERA 02
+            </div>
+
+            <video
+                id="cam2"
+                class="camera-feed"
+                src="cam2.mp4"
+                autoplay
+                muted
+                loop
+                playsinline>
+            </video>
+
+            <div class="camera-overlay">
+                <span>CAM-02</span>
+                <span class="rec">REC</span>
+                <span id="cam2Clock">00:00:00</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel terminal-panel">
+
+        <div class="panel-title">
+            TERMINAL
+        </div>
+
+        <div
+            class="terminal"
+            id="terminal">
+
+            <div class="line info">
+                CYBER//OPS TERMINAL v4.6.7
+            </div>
+
+            <div class="line info">
+                Secure local simulation environment.
+            </div>
+
+            <div class="line info">
+                ----------------------------------------
+            </div>
+
+            <div class="line success">
+                [SYSTEM] All simulated services initialized.
+            </div>
+
+            <div class="line success">
+                [NETWORK] Local interface ready.
+            </div>
+
+            <div class="line success">
+                [CCTV] Camera feeds connected.
+            </div>
+
+            <div class="line success">
+                [DIAG] Diagnostics module ready.
+            </div>
+
+            <div class="line">
+                <span class="prompt">
+                    admin@cyberops:~$
+                </span>
+
+                <span class="cursor"></span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel hack-panel">
+
+        <div class="panel-title">
+            OPERATION CONTROL
+        </div>
+
+        <div class="hack-content">
+
+            <button
+                class="hack-button"
+                id="hackButton"
+                onclick="startHack()">
+                INITIATE HACK
+            </button>
+
+            <div class="progress-wrap">
+
+                <div class="progress-label">
+                    <span>
+                        OPERATION PROGRESS
+                    </span>
+
+                    <span id="progressText">
+                        0%
+                    </span>
+                </div>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        id="progressBar">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="right-column">
+
+    <div class="panel diagnostics-panel">
+
+        <div class="panel-title">
+            DIAGNOSTICS FEED
+        </div>
+
+        <video
+            id="diagnosticsVideo"
+            class="diagnostics-video"
+            src="diagnostics.mp4"
+            autoplay
+            muted
+            loop
+            playsinline>
+        </video>
+
+    </div>
+
+
+    <div class="panel telemetry-panel">
+
+        <div class="panel-title">
+            TELEMETRY
+        </div>
+
+        <div class="telemetry">
+
+            <div class="telemetry-row">
+                <span>HOST</span>
+                <span>CYBER-OPS-01</span>
+            </div>
+
+            <div class="telemetry-row">
+                <span>PORT</span>
+                <span>443</span>
+            </div>
+
+            <div class="telemetry-row">
+                <span>LATENCY</span>
+                <span id="latencyValue">18 ms</span>
+            </div>
+
+            <div class="telemetry-row">
+                <span>PACKETS</span>
+                <span id="packetValue">8,421</span>
+            </div>
+
+            <div class="telemetry-row">
+                <span>ENCRYPTION</span>
+                <span>AES-256</span>
+            </div>
+
+            <div class="telemetry-row">
+                <span>FIREWALL</span>
+                <span>ACTIVE</span>
+            </div>
+
+            <div class="telemetry-row">
+                <span>VPN</span>
+                <span>CONNECTED</span>
+            </div>
+
+            <div class="telemetry-row">
+                <span>TRACE</span>
+                <span id="traceValue">0%</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel mission-panel">
+
+        <div class="panel-title">
+            MISSION STATUS
+        </div>
+
+        <div class="mission-content">
+
+            <div
+                class="mission-status"
+                id="missionStatus">
+                STANDBY
+            </div>
+
+            <div
+                class="mission-text"
+                id="missionText">
+
+                Awaiting operator command.
+                <br>
+
+                Simulation systems are ready.
+                <br>
+
+                Press H or INITIATE HACK to begin.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<footer class="footer">
+
+    <span>
+        CYBER//OPS LOCAL SIMULATION
+    </span>
+
+    <span>
+        PRESS [H] TO INITIATE
+    </span>
+
+</footer>
+
+</div>
+
+
+<div
+    class="overlay"
+    id="appsScreen">
+
+    <div class="topbar">
+
+        <button
+            class="back"
+            onclick="closeOverlay('appsScreen')">
+            ← BACK
+        </button>
+
+        <div class="title">
+            🧰 CYBER//OPS APPS
+        </div>
+
+    </div>
+
+
+    <div class="screen">
+
+        <div class="cardgrid">
+
+            <div
+                class="appcard"
+                onclick="openApp('cracker')">
+
+                <div class="appicon">
+                    🔐
+                </div>
+
+                <div class="appname">
+                    PASSWORD CRACKER
+                </div>
+
+                <div class="appdesc">
+                    Fictional password cracking simulation.
+                </div>
+
+            </div>
+
+
+            <div
+                class="appcard"
+                onclick="openApp('miner')">
+
+                <div class="appicon">
+                    ⛏️
+                </div>
+
+                <div class="appname">
+                    CRYPTO MINER
+                </div>
+
+                <div class="appdesc">
+                    Fake local mining dashboard.
+                </div>
+
+            </div>
+
+
+            <div
+                class="appcard"
+                onclick="openApp('network')">
+
+                <div class="appicon">
+                    📡
+                </div>
+
+                <div class="appname">
+                    NETWORK MONITOR
+                </div>
+
+                <div class="appdesc">
+                    Simulated traffic and packets.
+                </div>
+
+            </div>
+
+
+            <div
+                class="appcard"
+                onclick="openApp('system')">
+
+                <div class="appicon">
+                    🖥️
+                </div>
+
+                <div class="appname">
+                    SYSTEM MONITOR
+                </div>
+
+                <div class="appdesc">
+                    Fake CPU, RAM and temperature.
+                </div>
+
+            </div>
+
+
+            <div
+                class="appcard"
+                onclick="findIPs()">
+
+                <div class="appicon">
+                    🌐
+                </div>
+
+                <div class="appname">
+                    IP FINDER
+                </div>
+
+                <div class="appdesc">
+                    Fictional IP discovery.
+                </div>
+
+            </div>
+
+
+            <div
+                class="appcard"
+                onclick="hackVAR()">
+
+                <div class="appicon">
+                    ⚽
+                </div>
+
+                <div class="appname">
+                    VAR ANALYZER
+                </div>
+
+                <div class="appdesc">
+                    Football replay simulation.
+                </div>
+
+            </div>
+
+
+            <div
+                class="appcard"
+                onclick="openGame()">
+
+                <div class="appicon">
+                    🎮
+                </div>
+
+                <div class="appname">
+                    CYBER ARENA
+                </div>
+
+                <div class="appdesc">
+                    Playable 2D canvas game.
+                </div>
+
+            </div>
+
+
+            <div
+                class="appcard"
+                onclick="openTextEditor()">
+
+                <div class="appicon">
+                    📝
+                </div>
+
+                <div class="appname">
+                    TEXT EDITOR
+                </div>
+
+                <div class="appdesc">
+                    Opens your existing editor.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    class="overlay"
+    id="crackerScreen">
+
+    <div class="topbar">
+
+        <button
+            class="back"
+            onclick="closeOverlay('crackerScreen')">
+            ← BACK
+        </button>
+
+        <div class="title">
+            🔐 PASSWORD CRACKER
+        </div>
+
+    </div>
+
+
+    <div class="screen">
+
+        <div class="box">
+
+            <div>
+                FICTIONAL TARGET
+            </div>
+
+            <div class="row">
+
+                <input
+                    id="crackerTarget"
+                    class="field"
+                    value="ADMIN_67">
+
+                <button
+                    class="bigbtn"
+                    onclick="startCracker()">
+                    CRACK
+                </button>
+
+            </div>
+
+            <div
+                id="crackerStatus"
+                class="info">
+                Waiting for operator...
+            </div>
+
+        </div>
+
+
+        <div class="box">
+
+            <div
+                class="bigstat"
+                id="crackerPercent">
+                0%
+            </div>
+
+            <div class="bar">
+
+                <div
+                    class="fill"
+                    id="crackerBar">
+                </div>
+
+            </div>
+
+            <div
+                class="log"
+                id="crackerLog">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    class="overlay"
+    id="minerScreen">
+
+    <div class="topbar">
+
+        <button
+            class="back"
+            onclick="closeOverlay('minerScreen')">
+            ← BACK
+        </button>
+
+        <div class="title">
+            ⛏️ CRYPTO//MINER
+        </div>
+
+    </div>
+
+
+    <div class="screen">
+
+        <div class="box">
+
+            <div
+                class="bigstat"
+                id="hashrate">
+                0 MH/s
+            </div>
+
+            <div class="info">
+                SIMULATED HASHRATE
+            </div>
+
+        </div>
+
+
+        <div class="cardgrid">
+
+            <div class="box">
+
+                <div
+                    class="bigstat"
+                    id="temp">
+                    42°C
+                </div>
+
+                <div class="info">
+                    TEMPERATURE
+                </div>
+
+            </div>
+
+
+            <div class="box">
+
+                <div
+                    class="bigstat"
+                    id="power">
+                    0 W
+                </div>
+
+                <div class="info">
+                    POWER
+                </div>
+
+            </div>
+
+
+            <div class="box">
+
+                <div
+                    class="bigstat"
+                    id="shares">
+                    0
+                </div>
+
+                <div class="info">
+                    SHARES
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="box">
+
+            <div
+                class="bigstat"
+                id="balance">
+                0.00000000 BTC
+            </div>
+
+            <div class="info">
+                FICTIONAL BALANCE
+            </div>
+
+            <div class="row">
+
+                <button
+                    class="bigbtn"
+                    onclick="toggleMiner()"
+                    id="minerBtn">
+                    START MINING
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    class="overlay"
+    id="networkScreen">
+
+    <div class="topbar">
+
+        <button
+            class="back"
+            onclick="closeOverlay('networkScreen')">
+            ← BACK
+        </button>
+
+        <div class="title">
+            📡 NETWORK MONITOR
+        </div>
+
+    </div>
+
+
+    <div class="screen">
+
+        <div class="box">
+
+            <div
+                class="bigstat"
+                id="netSpeed">
+                0 Mbps
+            </div>
+
+            <div class="info">
+                SIMULATED TRAFFIC
+            </div>
+
+        </div>
+
+
+        <div class="box">
+
+            <div
+                class="log"
+                id="networkLog">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    class="overlay"
+    id="systemScreen">
+
+    <div class="topbar">
+
+        <button
+            class="back"
+            onclick="closeOverlay('systemScreen')">
+            ← BACK
+        </button>
+
+        <div class="title">
+            🖥️ SYSTEM MONITOR
+        </div>
+
+    </div>
+
+
+    <div class="screen">
+
+        <div class="cardgrid">
+
+            <div class="box">
+
+                <div
+                    class="bigstat"
+                    id="sysCpu">
+                    37%
+                </div>
+
+                <div>
+                    CPU
+                </div>
+
+            </div>
+
+
+            <div class="box">
+
+                <div
+                    class="bigstat"
+                    id="sysRam">
+                    42%
+                </div>
+
+                <div>
+                    RAM
+                </div>
+
+            </div>
+
+
+            <div class="box">
+
+                <div
+                    class="bigstat"
+                    id="sysTemp">
+                    51°C
+                </div>
+
+                <div>
+                    TEMP
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    class="overlay"
+    id="gameScreen">
+
+    <div class="topbar">
+
+        <button
+            class="back"
+            onclick="closeGame()">
+            ← BACK
+        </button>
+
+        <div class="title">
+            🎮 CYBER ARENA
+        </div>
+
+    </div>
+
+
+    <div class="screen">
+
+        <div class="gamehud">
+
+            <span>
+                SCORE:
+                <b id="gameScore">0</b>
+            </span>
+
+            <span>
+                HP:
+                <b id="gameHp">100</b>
+            </span>
+
+            <span>
+                WAVE:
+                <b id="gameWave">1</b>
+            </span>
+
+        </div>
+
+
+        <canvas
+            id="gameCanvas"
+            width="900"
+            height="520">
+        </canvas>
+
+
+        <div class="hint">
+            WASD / ARROW KEYS = MOVE · SPACE = SHOOT · ENTER = RESTART
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="textEditorScreen">
+
+    <div class="topbar">
+
+        <button
+            class="back"
+            onclick="closeTextEditor()">
+            ← BACK
+        </button>
+
+        <div class="title">
+            📝 TEXT EDITOR
+        </div>
+
+    </div>
+
+
+    <div class="editor-area">
+
+        <textarea
+            id="textEditor"
+            spellcheck="false"
+            placeholder="Start typing...">
+        </textarea>
+
+    </div>
+
+</div>
+
+
+<audio
+    id="buttonSound"
+    src="button.mp3"
+    preload="auto">
+</audio>
+
+<audio
+    id="terminalAudio"
+    preload="auto">
+</audio>
+
+
+<script>
+
+/* =========================================================
+   AUDIO
+========================================================= */
+
+const buttonSound =
+    document.getElementById("buttonSound");
+
+const terminalAudio =
+    document.getElementById("terminalAudio");
+
+const terminalTracks = [
+    "terminal1.mp3",
+    "terminal2.mp3",
+    "terminal3.mp3"
+];
+
+let terminalTrackIndex = 0;
+let terminalAudioStarted = false;
+
+
+function playButtonSound() {
+
+    try {
+
+        buttonSound.currentTime = 0;
+
+        buttonSound
+            .play()
+            .catch(() => {});
+
+    } catch (error) {}
+
+}
+
+
+function playTerminalTrack() {
+
+    if (
+        terminalTrackIndex >=
+        terminalTracks.length
+    ) {
+
+        stopTerminalAudio();
+
+        return;
+    }
+
+    terminalAudio.src =
+        terminalTracks[
+            terminalTrackIndex
+        ];
+
+    terminalAudio.currentTime = 0;
+
+    terminalAudio
+        .play()
+        .catch(() => {});
+}
+
+
+function startTerminalAudio() {
+
+    if (terminalAudioStarted) {
+        return;
+    }
+
+    terminalAudioStarted = true;
+    terminalTrackIndex = 0;
+
+    playTerminalTrack();
+}
+
+
+function stopTerminalAudio() {
+
+    terminalAudio.pause();
+
+    terminalAudio.currentTime = 0;
+
+    terminalAudio.removeAttribute("src");
+
+    terminalAudio.load();
+
+    terminalAudioStarted = false;
+
+    terminalTrackIndex = 0;
+}
+
+
+terminalAudio.addEventListener(
+    "ended",
+    () => {
+
+        terminalTrackIndex++;
+
+        if (
+            terminalTrackIndex <
+            terminalTracks.length
+        ) {
+
+            playTerminalTrack();
+
+        } else {
+
+            stopTerminalAudio();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   TERMINAL
+========================================================= */
+
+const terminal =
+    document.getElementById("terminal");
+
+
+function addLine(
+    text,
+    type = ""
+) {
+
+    const element =
+        document.createElement("div");
+
+    element.className =
+        "line " + type;
+
+    element.textContent = text;
+
+    terminal.appendChild(element);
+
+    terminal.scrollTop =
+        terminal.scrollHeight;
+}
+
+
+function addPrompt(
+    command = ""
+) {
+
+    const element =
+        document.createElement("div");
+
+    element.className = "line";
+
+    element.innerHTML =
+        '<span class="prompt">admin@cyberops:~$</span> '
+        + command;
+
+    terminal.appendChild(element);
+
+    terminal.scrollTop =
+        terminal.scrollHeight;
+}
+
+
+function sleep(ms) {
+
+    return new Promise(
+        resolve => setTimeout(resolve, ms)
+    );
+
+}
+
+
+async function typeTerminalCommand(
+    command
+) {
+
+    const element =
+        document.createElement("div");
+
+    element.className =
+        "line";
+
+    const prompt =
+        document.createElement("span");
+
+    prompt.className =
+        "prompt";
+
+    prompt.textContent =
+        "admin@cyberops:~$ ";
+
+    element.appendChild(prompt);
+
+    const commandElement =
+        document.createElement("span");
+
+    element.appendChild(
+        commandElement
+    );
+
+    terminal.appendChild(element);
+
+    for (const character of command) {
+
+        commandElement.textContent +=
+            character;
+
+        terminal.scrollTop =
+            terminal.scrollHeight;
+
+        await sleep(18);
+    }
+
+}
+
+
+/* =========================================================
+   MAIN HACK SIMULATION
+========================================================= */
+
+let hacking = false;
+
+
+function getCommandForStep(step) {
+
+    const commands = [
+
+        "sudo cyberops --initialize",
+
+        "load_module reconnaissance",
+
+        "scan --target LOCAL_SIMULATION",
+
+        "analyze firewall",
+
+        "enumerate services",
+
+        "resolve encrypted channel",
+
+        "inject simulation payload",
+
+        "bypass virtual firewall",
+
+        "establish operator tunnel",
+
+        "extract simulated data",
+
+        "cleanup traces"
+
+    ];
+
+    return commands[
+        step % commands.length
+    ];
+}
+
+
+async function startHack() {
+
+    if (hacking) {
+        return;
+    }
+
+    hacking = true;
+
+    playButtonSound();
+
+    /* ONLY INITIATE HACK STARTS TERMINAL MUSIC */
+    startTerminalAudio();
+
+    const hackButton =
+        document.getElementById(
+            "hackButton"
+        );
+
+    hackButton.disabled = true;
+
+    hackButton.textContent =
+        "OPERATION RUNNING...";
+
+    document.getElementById(
+        "missionStatus"
+    ).textContent = "ACTIVE";
+
+    document.getElementById(
+        "missionText"
+    ).innerHTML =
+        "Simulation operation in progress.<br>" +
+        "Monitoring virtual telemetry...";
+
+    clearTerminal(false);
+
+    addLine(
+        "========================================",
+        "info"
+    );
+
+    addLine(
+        "CYBER//OPS SIMULATION STARTED",
+        "success"
+    );
+
+    addLine(
+        "This is a fictional local simulation.",
+        "warning"
+    );
+
+    addLine(
+        "No real systems are being accessed.",
+        "warning"
+    );
+
+    addLine(
+        "========================================",
+        "info"
+    );
+
+
+    for (
+        let progress = 0;
+        progress <= 100;
+        progress++
+    ) {
+
+        if (progress % 9 === 0) {
+
+            await typeTerminalCommand(
+                getCommandForStep(
+                    Math.floor(
+                        progress / 9
+                    )
+                )
+            );
+
+        }
+
+
+        if (progress === 17) {
+
+            addLine(
+                "[SCAN] Virtual target discovered.",
+                "success"
+            );
+
+        }
+
+
+        if (progress === 34) {
+
+            addLine(
+                "[FIREWALL] Simulated protection detected.",
+                "warning"
+            );
+
+        }
+
+
+        if (progress === 51) {
+
+            addLine(
+                "[MODULE] Loading fictional payload...",
+                "info"
+            );
+
+        }
+
+
+        if (progress === 67) {
+
+            addLine(
+                "[67] SIX SEVEN PROTOCOL DETECTED 💀",
+                "success"
+            );
+
+        }
+
+
+        if (progress === 78) {
+
+            addLine(
+                "[TRACE] Trace resistance: SIMULATED.",
+                "warning"
+            );
+
+        }
+
+
+        if (progress === 91) {
+
+            addLine(
+                "[DATA] Simulated data extraction complete.",
+                "success"
+            );
+
+        }
+
+
+        updateProgress(progress);
+
+        await sleep(55);
+
+    }
+
+
+    addLine(
+        "[SUCCESS] OPERATION COMPLETE.",
+        "success"
+    );
+
+    addLine(
+        "[SYSTEM] No real-world systems were accessed.",
+        "info"
+    );
+
+
+    document.getElementById(
+        "missionStatus"
+    ).textContent = "COMPLETE";
+
+    document.getElementById(
+        "missionText"
+    ).innerHTML =
+        "Simulation complete.<br>" +
+        "All virtual objectives completed.";
+
+
+    hackButton.disabled = false;
+
+    hackButton.textContent =
+        "INITIATE HACK";
+
+    hacking = false;
+}
+
+
+function updateProgress(value) {
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+        value + "%";
+
+    document.getElementById(
+        "progressText"
+    ).textContent =
+        value + "%";
+}
+
+
+/* =========================================================
+   QUICK OPTIONS
+========================================================= */
+
+function scanSystem() {
+
+    playButtonSound();
+
+    /* NO TERMINAL MUSIC HERE */
+
+    addPrompt(
+        "scan --system"
+    );
+
+    addLine(
+        "[SCAN] Initializing virtual system scan...",
+        "info"
+    );
+
+    setTimeout(
+        () => {
+
+            addLine(
+                "[SCAN] CPU interface: ONLINE",
+                "success"
+            );
+
+            addLine(
+                "[SCAN] Memory interface: ONLINE",
+                "success"
+            );
+
+            addLine(
+                "[SCAN] Network interface: ONLINE",
+                "success"
+            );
+
+            addLine(
+                "[SCAN] No real system access performed.",
+                "warning"
+            );
+
+        },
+        500
+    );
+}
+
+
+function accessCams() {
+
+    playButtonSound();
+
+    /* NO TERMINAL MUSIC HERE */
+
+    addPrompt(
+        "access --cctv"
+    );
+
+    addLine(
+        "[CCTV] Connecting to simulated camera feeds...",
+        "info"
+    );
+
+    document
+        .getElementById("cam1")
+        .play()
+        .catch(() => {});
+
+    document
+        .getElementById("cam2")
+        .play()
+        .catch(() => {});
+
+
+    setTimeout(
+        () => {
+
+            addLine(
+                "[CCTV] CAMERA 01 ONLINE",
+                "success"
+            );
+
+            addLine(
+                "[CCTV] CAMERA 02 ONLINE",
+                "success"
+            );
+
+        },
+        400
+    );
+}
+
+
+function diagnostics() {
+
+    playButtonSound();
+
+    /* NO TERMINAL MUSIC HERE */
+
+    addPrompt(
+        "diagnostics --full"
+    );
+
+    addLine(
+        "[DIAG] Running virtual diagnostics...",
+        "info"
+    );
+
+    const video =
+        document.getElementById(
+            "diagnosticsVideo"
+        );
+
+    video.currentTime = 0;
+
+    video
+        .play()
+        .catch(() => {});
+
+
+    setTimeout(
+        () => {
+
+            [
+                "CPU",
+                "MEMORY",
+                "NETWORK",
+                "VIDEO SUBSYSTEM"
+            ].forEach(
+                item => {
+
+                    addLine(
+                        "[DIAG] " +
+                        item +
+                        ": PASS",
+                        "success"
+                    );
+
+                }
+            );
+
+        },
+        600
+    );
+}
+
+
+/* =========================================================
+   VAR
+========================================================= */
+
+function hackVAR() {
+
+    playButtonSound();
+
+    addPrompt(
+        "hack --var"
+    );
+
+    addLine(
+        "[VAR] Initializing fictional VAR access...",
+        "info"
+    );
+
+    setTimeout(
+        () => {
+
+            addLine(
+                "[VAR] Connecting to referee tablet...",
+                "info"
+            );
+
+        },
+        400
+    );
+
+
+    setTimeout(
+        () => {
+
+            addLine(
+                "[VAR] Loading 47 completely fictional camera angles...",
+                "info"
+            );
+
+        },
+        900
+    );
+
+
+    setTimeout(
+        () => {
+
+            addLine(
+                "[VAR] Drawing offside lines...",
+                "info"
+            );
+
+        },
+        1400
+    );
+
+
+    setTimeout(
+        () => {
+
+            addLine(
+                "[VAR] Reviewing suspicious decision...",
+                "warning"
+            );
+
+        },
+        1900
+    );
+
+
+    setTimeout(
+        () => {
+
+            addLine(
+                "[VAR] FRAME-BY-FRAME ANALYSIS COMPLETE.",
+                "success"
+            );
+
+            addLine(
+                "[VAR] Decision: REFEREE HAS BEEN NOTIFIED 💀",
+                "success"
+            );
+
+            addLine(
+                "[VAR] SUS LEVEL: 97%",
+                "warning"
+            );
+
+        },
+        2500
+    );
+}
+
+
+/* =========================================================
+   FICTIONAL IP FINDER
+========================================================= */
+
+function findIPs() {
+
+    playButtonSound();
+
+    addPrompt(
+        "find --ips"
+    );
+
+    addLine(
+        "[NET] Starting fictional IP discovery...",
+        "info"
+    );
+
+    addLine(
+        "[NET] Searching simulated network...",
+        "info"
+    );
+
+
+    const fakeIPv4 = [
+
+        "192.168.67.69",
+
+        "10.0.67.420",
+
+        "172.16.99.67",
+
+        "127.0.0.67",
+
+        "192.0.2.67",
+
+        "10.67.67.67",
+
+        "192.168.420.69"
+
+    ];
+
+
+    const fakeIPv6 = [
+
+        "2001:db8:67:69::420",
+
+        "2001:db8:dead:beef:67::1",
+
+        "2001:db8:cafe:babe:67::69",
+
+        "2001:db8:1337:67::420",
+
+        "2001:db8:69:67:abcd::404",
+
+        "2001:db8:67:67:67::69"
+
+    ];
+
+
+    const randomIPv4 =
+        fakeIPv4[
+            Math.floor(
+                Math.random() *
+                fakeIPv4.length
+            )
+        ];
+
+
+    const randomIPv4_2 =
+        fakeIPv4[
+            Math.floor(
+                Math.random() *
+                fakeIPv4.length
+            )
+        ];
+
+
+    const randomIPv6 =
+        fakeIPv6[
+            Math.floor(
+                Math.random() *
+                fakeIPv6.length
+            )
+        ];
+
+
+    const randomIPv6_2 =
+        fakeIPv6[
+            Math.floor(
+                Math.random() *
+                fakeIPv6.length
+            )
+        ];
+
+
+    setTimeout(
+        () =>
+            addLine(
+                "[NET] IPv4: " +
+                randomIPv4,
+                "success"
+            ),
+        700
+    );
+
+
+    setTimeout(
+        () =>
+            addLine(
+                "[NET] IPv4: " +
+                randomIPv4_2,
+                "success"
+            ),
+        1100
+    );
+
+
+    setTimeout(
+        () =>
+            addLine(
+                "[NET] IPv6: " +
+                randomIPv6,
+                "success"
+            ),
+        1500
+    );
+
+
+    setTimeout(
+        () =>
+            addLine(
+                "[NET] IPv6: " +
+                randomIPv6_2,
+                "success"
+            ),
+        1900
+    );
+
+
+    setTimeout(
+        () => {
+
+            addLine(
+                "[NET] Target classification: UNKNOWN",
+                "warning"
+            );
+
+            addLine(
+                "[NET] 0 real devices contacted.",
+                "warning"
+            );
+
+            addLine(
+                "[NET] Results are completely fictional.",
+                "info"
+            );
+
+            addLine(
+                "[NET] IP discovery simulation complete.",
+                "success"
+            );
+
+        },
+        2400
+    );
+}
+
+
+/* =========================================================
+   CLEAR
+========================================================= */
+
+function clearTerminal(
+    playSound = true
+) {
+
+    if (playSound) {
+        playButtonSound();
+    }
+
+    terminal.innerHTML = "";
+
+    addLine(
+        "CYBER//OPS TERMINAL CLEARED.",
+        "info"
+    );
+
+    addLine(
+        "Awaiting operator command...",
+        "success"
+    );
+}
+
+
+/* =========================================================
+   SYSTEM STATS
+========================================================= */
+
+function updateStats() {
+
+    const cpu =
+        Math.floor(
+            25 + Math.random() * 55
+        );
+
+    const ram =
+        (
+            5.5 +
+            Math.random() * 3.5
+        ).toFixed(1);
+
+    const ramPercent =
+        Math.round(
+            parseFloat(ram) /
+            16 *
+            100
+        );
+
+
+    document.getElementById(
+        "cpuValue"
+    ).textContent =
+        cpu + "%";
+
+
+    document.getElementById(
+        "cpuMeter"
+    ).style.width =
+        cpu + "%";
+
+
+    document.getElementById(
+        "ramValue"
+    ).textContent =
+        ram + " GB / 16 GB";
+
+
+    document.getElementById(
+        "ramMeter"
+    ).style.width =
+        ramPercent + "%";
+
+
+    document.getElementById(
+        "latencyValue"
+    ).textContent =
+        Math.floor(
+            8 + Math.random() * 30
+        ) + " ms";
+
+
+    document.getElementById(
+        "packetValue"
+    ).textContent =
+        Math.floor(
+            7000 +
+            Math.random() * 5000
+        ).toLocaleString();
+
+
+    document.getElementById(
+        "traceValue"
+    ).textContent =
+        Math.floor(
+            Math.random() * 8
+        ) + "%";
+
+
+    if (
+        document.getElementById(
+            "sysCpu"
+        )
+    ) {
+
+        document.getElementById(
+            "sysCpu"
+        ).textContent =
+            cpu + "%";
+
+
+        document.getElementById(
+            "sysRam"
+        ).textContent =
+            ramPercent + "%";
+
+
+        document.getElementById(
+            "sysTemp"
+        ).textContent =
+            Math.floor(
+                45 +
+                Math.random() * 25
+            ) + "°C";
+
+    }
+
+}
+
+
+setInterval(
+    updateStats,
+    1200
+);
+
+
+/* =========================================================
+   CLOCK
+========================================================= */
+
+function updateClock() {
+
+    const time =
+        new Date().toLocaleTimeString(
+            "en-US",
+            {
+                hour12: false
+            }
+        );
+
+
+    document.getElementById(
+        "headerClock"
+    ).textContent = time;
+
+
+    document.getElementById(
+        "cam1Clock"
+    ).textContent = time;
+
+
+    document.getElementById(
+        "cam2Clock"
+    ).textContent = time;
+
+}
+
+
+setInterval(
+    updateClock,
+    1000
+);
+
+updateClock();
+updateStats();
+
+
+/* =========================================================
+   OVERLAYS
+========================================================= */
+
+function closeOverlay(id) {
+
+    document.getElementById(
+        id
+    ).style.display = "none";
+
+}
+
+
+function openApps() {
+
+    playButtonSound();
+
+    document.getElementById(
+        "appsScreen"
+    ).style.display = "block";
+
+}
+
+
+function openApp(name) {
+
+    playButtonSound();
+
+    document
+        .querySelectorAll(".overlay")
+        .forEach(
+            overlay => {
+
+                if (
+                    overlay.id !==
+                    "appsScreen"
+                ) {
+
+                    overlay.style.display =
+                        "none";
+
+                }
+
+            }
+        );
+
+
+    const appIds = {
+
+        cracker:
+            "crackerScreen",
+
+        miner:
+            "minerScreen",
+
+        network:
+            "networkScreen",
+
+        system:
+            "systemScreen"
+
+    };
+
+
+    const id =
+        appIds[name];
+
+
+    if (id) {
+
+        document.getElementById(
+            id
+        ).style.display =
+            "block";
+
+    }
+
+}
+
+
+/* =========================================================
+   TEXT EDITOR
+========================================================= */
+
+function openTextEditor() {
+
+    playButtonSound();
+
+    document.getElementById(
+        "textEditorScreen"
+    ).style.display =
+        "block";
+
+
+    setTimeout(
+        () => {
+
+            document
+                .getElementById(
+                    "textEditor"
+                )
+                .focus();
+
+        },
+        50
+    );
+
+}
+
+
+function closeTextEditor() {
+
+    playButtonSound();
+
+    document.getElementById(
+        "textEditorScreen"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   PASSWORD CRACKER
+========================================================= */
+
+let crackerTimer = null;
+
+
+function startCracker() {
+
+    if (crackerTimer) {
+        return;
+    }
+
+
+    const target =
+        document.getElementById(
+            "crackerTarget"
+        ).value ||
+        "ADMIN_67";
+
+
+    const bar =
+        document.getElementById(
+            "crackerBar"
+        );
+
+
+    const percent =
+        document.getElementById(
+            "crackerPercent"
+        );
+
+
+    const log =
+        document.getElementById(
+            "crackerLog"
+        );
+
+
+    const status =
+        document.getElementById(
+            "crackerStatus"
+        );
+
+
+    bar.style.width = "0%";
+
+    percent.textContent = "0%";
+
+    log.innerHTML = "";
+
+    status.textContent =
+        "Running fictional local simulation...";
+
+
+    let progress = 0;
+
+
+    crackerTimer =
+        setInterval(
+            () => {
+
+                progress +=
+                    Math.floor(
+                        Math.random() * 7
+                    ) + 2;
+
+
+                if (progress > 100) {
+                    progress = 100;
+                }
+
+
+                bar.style.width =
+                    progress + "%";
+
+
+                percent.textContent =
+                    progress + "%";
+
+
+                log.innerHTML +=
+                    "[CRACK] Testing fictional candidate...<br>";
+
+
+                log.scrollTop =
+                    log.scrollHeight;
+
+
+                if (progress >= 100) {
+
+                    clearInterval(
+                        crackerTimer
+                    );
+
+                    crackerTimer = null;
+
+
+                    const fakePassword =
+                        target +
+                        "_67!";
+
+
+                    status.textContent =
+                        "PASSWORD FOUND";
+
+
+                    log.innerHTML +=
+                        "<span class='green'>" +
+                        "[SUCCESS] FICTIONAL PASSWORD: " +
+                        fakePassword +
+                        "</span><br>";
+
+
+                    log.innerHTML +=
+                        "[SYSTEM] No real account or password was accessed.";
+
+                }
+
+            },
+            120
+        );
+
+}
+
+
+/* =========================================================
+   FAKE CRYPTO MINER
+========================================================= */
+
+let mining = false;
+let minerTimer = null;
+let minerBalance = 0;
+
+
+function toggleMiner() {
+
+    mining = !mining;
+
+
+    const button =
+        document.getElementById(
+            "minerBtn"
+        );
+
+
+    if (mining) {
+
+        button.textContent =
+            "STOP MINING";
+
+
+        minerTimer =
+            setInterval(
+                () => {
+
+                    document.getElementById(
+                        "hashrate"
+                    ).textContent =
+                        (
+                            650 +
+                            Math.random() *
+                            500
+                        ).toFixed(2) +
+                        " MH/s";
+
+
+                    document.getElementById(
+                        "temp"
+                    ).textContent =
+                        Math.floor(
+                            55 +
+                            Math.random() *
+                            18
+                        ) +
+                        "°C";
+
+
+                    document.getElementById(
+                        "power"
+                    ).textContent =
+                        Math.floor(
+                            110 +
+                            Math.random() *
+                            70
+                        ) +
+                        " W";
+
+
+                    const shares =
+                        document.getElementById(
+                            "shares"
+                        );
+
+
+                    shares.textContent =
+                        Number(
+                            shares.textContent
+                        ) +
+                        Math.floor(
+                            Math.random() * 3
+                        );
+
+
+                    minerBalance +=
+                        Math.random() *
+                        0.00001;
+
+
+                    document.getElementById(
+                        "balance"
+                    ).textContent =
+                        minerBalance.toFixed(
+                            8
+                        ) +
+                        " BTC";
+
+                },
+                700
+            );
+
+    } else {
+
+        clearInterval(
+            minerTimer
+        );
+
+        minerTimer = null;
+
+
+        button.textContent =
+            "START MINING";
+
+
+        document.getElementById(
+            "hashrate"
+        ).textContent =
+            "0 MH/s";
+
+
+        document.getElementById(
+            "power"
+        ).textContent =
+            "0 W";
+
+    }
+
+}
+
+
+/* =========================================================
+   NETWORK MONITOR
+========================================================= */
+
+setInterval(
+    () => {
+
+        const screen =
+            document.getElementById(
+                "networkScreen"
+            );
+
+
+        if (
+            screen.style.display ===
+            "block"
+        ) {
+
+            document.getElementById(
+                "netSpeed"
+            ).textContent =
+                Math.floor(
+                    100 +
+                    Math.random() *
+                    900
+                ) +
+                " Mbps";
+
+
+            const log =
+                document.getElementById(
+                    "networkLog"
+                );
+
+
+            log.innerHTML +=
+                "[NET] Simulated packet burst detected<br>";
+
+
+            log.scrollTop =
+                log.scrollHeight;
+
+        }
+
+    },
+    700
+);
+
+
+/* =========================================================
+   2D CYBER ARENA
+========================================================= */
+
+const gameCanvas =
+    document.getElementById(
+        "gameCanvas"
+    );
+
+const gameContext =
+    gameCanvas.getContext(
+        "2d"
+    );
+
+
+let gameRunning = false;
+
+let keys = {};
+
+let player;
+
+let enemies = [];
+
+let bullets = [];
+
+let score = 0;
+
+let hp = 100;
+
+let wave = 1;
+
+let lastSpawn = 0;
+
+let lastShot = 0;
+
+
+function openGame() {
+
+    playButtonSound();
+
+    document.getElementById(
+        "gameScreen"
+    ).style.display =
+        "block";
+
+    initGame();
+
+}
+
+
+function closeGame() {
+
+    gameRunning = false;
+
+    document.getElementById(
+        "gameScreen"
+    ).style.display =
+        "none";
+
+}
+
+
+function initGame() {
+
+    score = 0;
+
+    hp = 100;
+
+    wave = 1;
+
+
+    player = {
+
+        x: 450,
+
+        y: 260,
+
+        r: 14,
+
+        speed: 4
+
+    };
+
+
+    enemies = [];
+
+    bullets = [];
+
+    lastSpawn = 0;
+
+    lastShot = 0;
+
+    gameRunning = true;
+
+
+    updateGameHud();
+
+    requestAnimationFrame(
+        gameLoop
+    );
+
+}
+
+
+function updateGameHud() {
+
+    document.getElementById(
+        "gameScore"
+    ).textContent =
+        score;
+
+
+    document.getElementById(
+        "gameHp"
+    ).textContent =
+        hp;
+
+
+    document.getElementById(
+        "gameWave"
+    ).textContent =
+        wave;
+
+}
+
+
+/* =========================
+   KEYBOARD
+========================= */
+
+window.addEventListener(
+    "keydown",
+    event => {
+
+        keys[
+            event.key.toLowerCase()
+        ] = true;
+
+
+        if (
+            event.code ===
+            "Space"
+        ) {
+
+            event.preventDefault();
+
+        }
+
+
+        if (
+            event.key ===
+            "Enter" &&
+            document.getElementById(
+                "gameScreen"
+            ).style.display ===
+            "block"
+        ) {
+
+            initGame();
+
+        }
+
+
+        if (
+            event.key.toLowerCase() ===
+            "h" &&
+            !event.ctrlKey &&
+            !event.altKey &&
+            !event.shiftKey &&
+            document.activeElement.tagName !==
+                "TEXTAREA" &&
+            document.activeElement.tagName !==
+                "INPUT"
+        ) {
+
+            startHack();
+
+        }
+
+    }
+);
+
+
+window.addEventListener(
+    "keyup",
+    event => {
+
+        keys[
+            event.key.toLowerCase()
+        ] = false;
+
+    }
+);
+
+
+/* =========================
+   GAME LOOP
+========================= */
+
+function gameLoop(time) {
+
+    if (!gameRunning) {
+        return;
+    }
+
+
+    const context =
+        gameContext;
+
+    const canvas =
+        gameCanvas;
+
+
+    /* PLAYER MOVEMENT */
+
+    if (
+        keys.w ||
+        keys.arrowup
+    ) {
+
+        player.y -=
+            player.speed;
+
+    }
+
+
+    if (
+        keys.s ||
+        keys.arrowdown
+    ) {
+
+        player.y +=
+            player.speed;
+
+    }
+
+
+    if (
+        keys.a ||
+        keys.arrowleft
+    ) {
+
+        player.x -=
+            player.speed;
+
+    }
+
+
+    if (
+        keys.d ||
+        keys.arrowright
+    ) {
+
+        player.x +=
+            player.speed;
+
+    }
+
+
+    player.x =
+        Math.max(
+            15,
+            Math.min(
+                canvas.width - 15,
+                player.x
+            )
+        );
+
+
+    player.y =
+        Math.max(
+            15,
+            Math.min(
+                canvas.height - 15,
+                player.y
+            )
+        );
+
+
+    /* ENEMY SPAWNING */
+
+    if (
+        time - lastSpawn >
+        Math.max(
+            350,
+            1000 -
+            wave * 50
+        )
+    ) {
+
+        const side =
+            Math.floor(
+                Math.random() * 4
+            );
+
+
+        let enemy;
+
+
+        if (side === 0) {
+
+            enemy = {
+                x: Math.random() *
+                    canvas.width,
+                y: -15
+            };
+
+        } else if (side === 1) {
+
+            enemy = {
+                x: canvas.width + 15,
+                y: Math.random() *
+                    canvas.height
+            };
+
+        } else if (side === 2) {
+
+            enemy = {
+                x: Math.random() *
+                    canvas.width,
+                y: canvas.height + 15
+            };
+
+        } else {
+
+            enemy = {
+                x: -15,
+                y: Math.random() *
+                    canvas.height
+            };
+
+        }
+
+
+        enemies.push({
+
+            x: enemy.x,
+
+            y: enemy.y,
+
+            r: 12,
+
+            speed:
+                1 +
+                wave * 0.08
+
+        });
+
+
+        lastSpawn = time;
+
+    }
+
+
+    /* SHOOTING */
+
+    if (
+        keys[" "] &&
+        time - lastShot > 180
+    ) {
+
+        let dx = 0;
+
+        let dy = -1;
+
+
+        if (
+            keys.w ||
+            keys.arrowup
+        ) {
+
+            dy = -1;
+
+        } else if (
+            keys.s ||
+            keys.arrowdown
+        ) {
+
+            dy = 1;
+
+        } else if (
+            keys.a ||
+            keys.arrowleft
+        ) {
+
+            dx = -1;
+            dy = 0;
+
+        } else if (
+            keys.d ||
+            keys.arrowright
+        ) {
+
+            dx = 1;
+            dy = 0;
+
+        }
+
+
+        bullets.push({
+
+            x: player.x,
+
+            y: player.y,
+
+            dx: dx,
+
+            dy: dy
+
+        });
+
+
+        lastShot = time;
+
+    }
+
+
+    /* BULLETS */
+
+    bullets.forEach(
+        bullet => {
+
+            bullet.x +=
+                bullet.dx * 7;
+
+            bullet.y +=
+                bullet.dy * 7;
+
+        }
+    );
+
+
+    /* ENEMIES */
+
+    enemies.forEach(
+        enemy => {
+
+            const dx =
+                player.x -
+                enemy.x;
+
+            const dy =
+                player.y -
+                enemy.y;
+
+            const distance =
+                Math.hypot(
+                    dx,
+                    dy
+                ) || 1;
+
+
+            enemy.x +=
+                dx /
+                distance *
+                enemy.speed;
+
+
+            enemy.y +=
+                dy /
+                distance *
+                enemy.speed;
+
+
+            if (
+                distance <
+                enemy.r +
+                player.r
+            ) {
+
+                hp -= 1;
+
+                enemy.x = -100;
+
+                enemy.y = -100;
+
+            }
+
+        }
+    );
+
+
+    /* COLLISIONS */
+
+    for (
+        let enemyIndex =
+            enemies.length - 1;
+
+        enemyIndex >= 0;
+
+        enemyIndex--
+    ) {
+
+        for (
+            let bulletIndex =
+                bullets.length - 1;
+
+            bulletIndex >= 0;
+
+            bulletIndex--
+        ) {
+
+            const enemy =
+                enemies[
+                    enemyIndex
+                ];
+
+            const bullet =
+                bullets[
+                    bulletIndex
+                ];
+
+
+            if (
+                Math.hypot(
+                    enemy.x -
+                    bullet.x,
+
+                    enemy.y -
+                    bullet.y
+                ) <
+                enemy.r + 4
+            ) {
+
+                enemies.splice(
+                    enemyIndex,
+                    1
+                );
+
+                bullets.splice(
+                    bulletIndex,
+                    1
+                );
+
+                score += 10;
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    wave =
+        1 +
+        Math.floor(
+            score / 200
+        );
+
+
+    updateGameHud();
+
+
+    /* DRAW BACKGROUND */
+
+    context.fillStyle =
+        "#020403";
+
+    context.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    /* GRID */
+
+    context.strokeStyle =
+        "#0d2a17";
+
+
+    for (
+        let x = 0;
+        x < canvas.width;
+        x += 30
+    ) {
+
+        context.beginPath();
+
+        context.moveTo(
+            x,
+            0
+        );
+
+        context.lineTo(
+            x,
+            canvas.height
+        );
+
+        context.stroke();
+
+    }
+
+
+    for (
+        let y = 0;
+        y < canvas.height;
+        y += 30
+    ) {
+
+        context.beginPath();
+
+        context.moveTo(
+            0,
+            y
+        );
+
+        context.lineTo(
+            canvas.width,
+            y
+        );
+
+        context.stroke();
+
+    }
+
+
+    /* PLAYER */
+
+    context.fillStyle =
+        "#00ff66";
+
+    context.beginPath();
+
+    context.arc(
+        player.x,
+        player.y,
+        player.r,
+        0,
+        Math.PI * 2
+    );
+
+    context.fill();
+
+
+    /* ENEMIES */
+
+    context.fillStyle =
+        "#ff4040";
+
+
+    enemies.forEach(
+        enemy => {
+
+            context.beginPath();
+
+            context.arc(
+                enemy.x,
+                enemy.y,
+                enemy.r,
+                0,
+                Math.PI * 2
+            );
+
+            context.fill();
+
+        }
+    );
+
+
+    /* BULLETS */
+
+    context.fillStyle =
+        "#d7ffe5";
+
+
+    bullets.forEach(
+        bullet => {
+
+            context.fillRect(
+                bullet.x - 2,
+                bullet.y - 2,
+                4,
+                4
+            );
+
+        }
+    );
+
+
+    /* GAME OVER */
+
+    if (hp <= 0) {
+
+        gameRunning = false;
+
+
+        context.fillStyle =
+            "#ff4040";
+
+        context.font =
+            "bold 42px Consolas";
+
+        context.textAlign =
+            "center";
+
+        context.fillText(
+            "SYSTEM DOWN",
+            canvas.width / 2,
+            canvas.height / 2
+        );
+
+
+        context.font =
+            "16px Consolas";
+
+        context.fillText(
+            "Press ENTER to restart",
+            canvas.width / 2,
+            canvas.height / 2 + 35
+        );
+
+
+        return;
+
+    }
+
+
+    requestAnimationFrame(
+        gameLoop
+    );
+
+}
+
+</script>
+
+<!-- YOUR EXISTING TEXT EDITOR SCRIPT -->
+<script src="editor.js"></script>
+
+</body>
+</html>
